@@ -3,8 +3,8 @@ package GamePack;
 import java.util.*;
 
 public class Plateau {
-	int longueur=10;
-	int largeur=10;
+	int longueur=400;
+	int largeur=400;
 	ArrayList<ArrayList<Integer>> surface = new ArrayList<ArrayList<Integer>>();
 	
 	double r=Math.random();

@@ -32,15 +32,25 @@ public class GamePanel {
 	}
 }
 
-class LectureCommand extends JPanel {
+class LectureCommand extends JPanel  {
 
+	  Plateau p = new Plateau();
+	  
+	//les murs
+	private int minX=0;
+	private int maxX=p.largeur-10;
+	private int minY=0;
+	private int maxY=p.longueur-10;
+	
 	  double r=Math.random();
 	  double r1=Math.random();
-	  private int pointX = (int) (r*400);
-	  private int pointY = (int) (r1*400);
+	  private int newPointX = (int) (r*(p.largeur-20));
+	  private int newPointY = (int) (r1*(p.longueur-20));
+	  
 	  public void movePoint(int keyCode) {
 	        int stepSize = 10; // c la vitesse de controle
-	        
+	        int pointX = newPointX;
+	        int pointY = newPointY;
 	        if (keyCode == KeyEvent.VK_LEFT) {
 	            pointX -= stepSize;
 	        } else if (keyCode == KeyEvent.VK_RIGHT) {
@@ -50,14 +60,61 @@ class LectureCommand extends JPanel {
 	        } else if (keyCode == KeyEvent.VK_DOWN) {
 	            pointY += stepSize;
 	        }
-	        
-	        repaint(); // pour actualiser la pos du point
+	        if ((pointX<=maxX-10 && pointX>=minX) && (pointY<=maxY-10 && pointY>=minY) ) {
+		        
+	        	if (!checkObs(pointX, pointY)) {
+	        		newPointX=pointX;
+			        newPointY=pointY;
+		        	repaint(); // pour actualiser la pos du point
+	        	}
+	        	
+
+	        }
 	    }
-	  
+	// Fonction pour vérifier les collisions avec les obstacles
+	  private boolean checkObs(int x, int y) {
+	      // Coordonnées des obstacles
+	      int obstacle1X = (maxX / 2) + 50;
+	      int obstacle1Y = maxY - 60;
+	      int obstacle1Width = 40;
+	      int obstacle1Height = 40;
+
+	      int obstacle2X = (maxX / 2) - 50;
+	      int obstacle2Y = maxY / 2;
+	      int obstacle2Width = 30;
+	      int obstacle2Height = 30;
+
+	      int obstacle3X = (maxX / 2) + 50;
+	      int obstacle3Y = (maxY / 2) - 100;
+	      int obstacle3Width = 20;
+	      int obstacle3Height = 20;
+
+	      if ((x + 10 >= obstacle1X && x <= obstacle1X + obstacle1Width && y + 10 >= obstacle1Y && y <= obstacle1Y + obstacle1Height) ||
+	          (x + 10 >= obstacle2X && x <= obstacle2X + obstacle2Width && y + 10 >= obstacle2Y && y <= obstacle2Y + obstacle2Height) ||
+	          (x + 10 >= obstacle3X && x <= obstacle3X + obstacle3Width && y + 10 >= obstacle3Y && y <= obstacle3Y + obstacle3Height)) {
+	          return true; 
+	      }
+
+	      return false; 
+	  }
 	  protected void paintComponent(Graphics g) {
 	        super.paintComponent(g);
 	        
+	        //dessiner les murs
+	        g.setColor(Color.gray);
+	        g.fillRect(minX, minY, minX+10, maxY);
+	        g.fillRect(minX, minY, maxX, minY+10);
+	        g.fillRect(maxX, minY, minX+10, maxY+10);
+	        g.fillRect(minX, maxY, maxX+10, minY+10);
+	        
+	        //dessiner les obstacles
+	        
+	        g.fillRect((maxX/2)+50, maxY-60, 40, 40); //obs 1 
+	        g.fillRect((maxX/2)-50, maxY/2, 30, 30); //obs 2
+	        g.fillRect((maxX/2)+50, (maxY/2)-100, 20, 20); //obs 3
+	        
+	        //dessiner la boule
 	        g.setColor(Color.BLUE);
-	        g.fillOval(pointX, pointY, 10, 10);
+	        g.fillOval(newPointX, newPointY, 10, 10);
 	    }
 }
